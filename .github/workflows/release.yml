@@ -18,3 +18,5 @@ jobs:
     steps:
       - name: Bump Version
         uses: ./.github/actions/bump-version
+        with:
+          release_branches: "${{ inputs.release_branches }}"
