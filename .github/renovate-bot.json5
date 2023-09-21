@@ -1,0 +1,9 @@
+{
+  extends: [
+    "github>kilip/renovate-config",
+    "github>kilip/renovate-config:automerge-github-actions",
+  ],
+  platform: "github",
+  username: "doyobot[bot]",
+  gitAuthor: "doyobot <132103405+doyobot[bot]@users.noreply.github.com>",
+}
