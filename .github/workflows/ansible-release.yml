@@ -3,6 +3,11 @@ name: Release
 
 on:  # yamllint disable-line rule:truthy
   workflow_call:
+    inputs:
+      release_branches:
+        type: string
+        required: false
+        default: "main,next"
 
 jobs:
   bump-version:
@@ -18,7 +23,7 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           tag_prefix: ""
-          release_branches: main
+          release_branches: ${{ inputs.release_branches }}
       - name: Create a GitHub release
         uses: ncipollo/release-action@v1
         with:
