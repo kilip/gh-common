@@ -1,0 +1,20 @@
+---
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_branches:
+        type: string
+        required: false
+        default: main
+
+jobs:
+  bump-version:
+    name: Bump Version
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Bump Version
+        uses: ./.github/actions/bump-version
