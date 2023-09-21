@@ -7,7 +7,7 @@ on:  # yamllint disable-line rule:truthy
       release_branches:
         type: string
         required: false
-        default: "main,next"
+        default: next
 
 jobs:
   bump-version:
