@@ -1,5 +1,5 @@
 ---
-name: Static Tests
+name: Lint
 
 on:
   workflow_call:
