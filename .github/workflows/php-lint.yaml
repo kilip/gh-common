@@ -56,11 +56,6 @@ jobs:
             phpstan-
         continue-on-error: true
 
-      - name: Clear test app cache
-        run: |
-          rm -Rf tests/Fixtures/app/var/cache/*
-          tests/Fixtures/app/console cache:warmup
-
       - name: Run PHPStan analysis
         run: |
           ./vendor/bin/phpstan --version
