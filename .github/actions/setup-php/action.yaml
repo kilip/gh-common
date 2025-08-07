@@ -5,6 +5,8 @@ inputs:
   php_version:
     description: PHP Version to Use
     default: "8.4"
+  working_dir:
+    description: Working Directory
 
 outputs:
   composer_cache_dir:
@@ -13,6 +15,7 @@ outputs:
 
 runs:
   using: composite
+
   steps:
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -22,11 +25,13 @@ runs:
         extensions: intl, bcmath, curl, openssl, mbstring, mongodb
         coverage: none
         ini-values: memory_limit=-1
+      working-directory: ${{ inputs.working_dir }}
 
     - name: Get composer cache directory
       shell: bash
       id: composercache
       run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      working-directory: ${{ inputs.working_dir }}
 
     - name: Cache dependencies
       uses: actions/cache@v4
@@ -34,7 +39,9 @@ runs:
         path: ${{ steps.composercache.outputs.dir }}
         key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
         restore-keys: ${{ runner.os }}-composer-
+      working-directory: ${{ inputs.working_dir }}
 
     - name: install project dependencies
       shell: bash
       run: composer install
+      working-directory: ${{ inputs.working_dir }}

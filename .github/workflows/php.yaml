@@ -1,6 +1,4 @@
 ---
-name: Lint
-
 on:
   workflow_call:
     inputs:
@@ -29,6 +27,7 @@ jobs:
         uses: kilip/gh-common/.github/actions/setup-php@main
         with:
           php_version: ${{ inputs.php_version }}
+          working_dir: ${{ inputs.working_dir }}
 
       - name: Cache PHPStan results
         uses: actions/cache@v4
