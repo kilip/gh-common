@@ -16,9 +16,6 @@ jobs:
   phpstan:
     name: PHPStan (PHP ${{ inputs.php_version }})
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ inputs.working_dir }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -43,3 +40,4 @@ jobs:
         run: |
           ./vendor/bin/phpstan --version
           ./vendor/bin/phpstan analyse --no-interaction --no-progress --ansi
+        working-directory: ${{ inputs.working_dir }}
