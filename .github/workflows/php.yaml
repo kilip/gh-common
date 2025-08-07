@@ -38,6 +38,7 @@ jobs:
 
       - name: Run PHPStan analysis
         run: |
+          echo $PWD
           ./vendor/bin/phpstan --version
           ./vendor/bin/phpstan analyse --no-interaction --no-progress --ansi
         working-directory: ${{ inputs.working_dir }}
