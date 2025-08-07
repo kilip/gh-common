@@ -1,0 +1,40 @@
+name: PHP Setup
+description: Setup PHP for CI Environment
+
+inputs:
+  php_version:
+    description: PHP Version to Use
+    default: "8.4"
+
+outputs:
+  composer_cache_dir:
+    description: Composer cache dir
+    value: ${{ steps.composercache.outputs.dir }}
+
+runs:
+  using: composite
+  steps:
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ php_version}}
+        tools: pecl, composer
+        extensions: intl, bcmath, curl, openssl, mbstring, mongodb
+        coverage: none
+        ini-values: memory_limit=-1
+
+    - name: Get composer cache directory
+      shell: bash
+      id: composercache
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache dependencies
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.composercache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+        restore-keys: ${{ runner.os }}-composer-
+
+    - name: install project dependencies
+      shell: bash
+      run: composer install
