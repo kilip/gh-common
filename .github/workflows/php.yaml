@@ -46,3 +46,21 @@ jobs:
           echo $PWD
           ./vendor/bin/phpstan --version
           ./vendor/bin/phpstan analyse --no-interaction --no-progress --ansi
+
+  phpunit:
+    name: PHPStan (PHP ${{ inputs.php_version }})
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+        working-directory: ${{ inputs.working_dir }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: kilip/gh-common/.github/actions/setup-php@main
+        with:
+          php_version: ${{ inputs.php_version }}
+          working_dir: ${{ inputs.working_dir }}
