@@ -53,7 +53,7 @@ jobs:
           ./vendor/bin/phpstan analyse --no-interaction --no-progress --ansi
 
   phpunit:
-    name: PHPStan (PHP ${{ inputs.php_version }})
+    name: PHPUnit (PHP ${{ inputs.php_version }})
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -73,7 +73,7 @@ jobs:
       - name: Run PHPUnit Tests
         run: |
           echo $PWD
-          ./vendor/bin/phpunit --coverage-clover=build/logs/clover
+          ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml
           ./vendor/bin/phpstan analyse --no-interaction --no-progress --ansi
 
       - name: Upload coverage reports to Codecov
