@@ -7,6 +7,7 @@ inputs:
     default: "8.4"
   working_dir:
     description: Working Directory
+    required: true
 
 outputs:
   composer_cache_dir:
