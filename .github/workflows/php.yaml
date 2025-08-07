@@ -16,6 +16,9 @@ jobs:
   phpstan:
     name: PHPStan (PHP ${{ inputs.php_version }})
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ${{ inputs.working_dir }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -24,7 +27,7 @@ jobs:
         uses: kilip/gh-common/.github/actions/setup-php@main
         with:
           php_version: ${{ inputs.php_version }}
-          working_dir: "./apps/api"
+          working_dir: ${{ inputs.working_dir }}
 
       - name: Cache PHPStan results
         uses: actions/cache@v4
