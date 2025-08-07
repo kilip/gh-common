@@ -11,6 +11,11 @@ on:
         description: PHP version with which the scripts are executed
         required: true
         type: string
+      codecov_flags:
+        description: Code Coverage Flags
+        type: string
+        required: true
+        default: phpunit
 
 jobs:
   phpstan:
@@ -64,3 +69,18 @@ jobs:
         with:
           php_version: ${{ inputs.php_version }}
           working_dir: ${{ inputs.working_dir }}
+
+      - name: Run PHPUnit Tests
+        run: |
+          echo $PWD
+          ./vendor/bin/phpunit --coverage-clover=build/logs/clover
+          ./vendor/bin/phpstan analyse --no-interaction --no-progress --ansi
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          working-directory: ${{ inputs.working_dir}}
+          directory: "build/logs"
+          flags: ${{ inputs.codecov_flags}}
+          verbose: true
