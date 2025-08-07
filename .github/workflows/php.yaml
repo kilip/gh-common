@@ -4,21 +4,16 @@ on:
     inputs:
       working_dir:
         type: string
-        required: false
-        default: ${{ github.workspace }}
+        required: true
       php_version:
         description: PHP version with which the scripts are executed
-        default: "8.4"
-        required: false
+        required: true
         type: string
 
 jobs:
   phpstan:
     name: PHPStan (PHP ${{ inputs.php_version }})
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ inputs.working_dir }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
