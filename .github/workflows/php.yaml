@@ -57,14 +57,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup postgres
-        if: inputs.use_postgres
-        run: |
-          sudo systemctl start postgresql
-          sudo -u postgres psql -d template1 -c "CREATE USER ${{ inputs.db_user }} WITH PASSWORD '${{ inputs.db_pass }}' CREATEDB"
-          createdb -h localhost -p 5432 -U ${{ inputs.db_user }} ${{ inputs.db_name }}
-          pg_isready -d api_platform_test -h localhost -p 5432 -U api_platform
-
       - name: Setup PHP
         uses: kilip/gh-common/.github/actions/setup-php@main
         with:
@@ -106,10 +98,13 @@ jobs:
           php_version: ${{ inputs.php_version }}
           working_dir: ${{ inputs.working_dir }}
 
-      - name: Ensure postgres database created
-        if: ${{ inputs.phpunit_symfony_create_db }}
+      - name: Setup postgres
+        if: inputs.use_postgres
         run: |
-          ./bin/console doctrine:database:create --env=test
+          sudo systemctl start postgresql
+          sudo -u postgres psql -d template1 -c "CREATE USER ${{ inputs.db_user }} WITH PASSWORD '${{ inputs.db_pass }}' CREATEDB"
+          createdb -h localhost -p 5432 -U ${{ inputs.db_user }} ${{ inputs.db_name }}
+          pg_isready -d ${{ inputs.db_name }} -h localhost -p 5432 -U ${{ inputs.db_user }}
 
       - name: Run PHPUnit Tests
         run: |
