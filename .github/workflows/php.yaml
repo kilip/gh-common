@@ -16,11 +16,49 @@ on:
         type: string
         required: true
         default: phpunit
+      postgres_version:
+        description: postgres version
+        required: false
+        type: string
+        default: "16"
+      db_user:
+        description: Database User
+        required: false
+        default: kilip
+        type: string
+      db_name:
+        description: Database Name
+        required: false
+        type: string
+        default: kilip
+      db_pass:
+        description: Database Password
+        required: false
+        type: string
+        default: kilip
+
+env:
+  DATABASE_URL: "postgres://${{ inputs.db_user }}:${{ inputs.db_pass}}@localhost:5432/${{ inputs.db_name }}?serverVersion=16&charset=utf8"
 
 jobs:
   phpstan:
     name: PHPStan (PHP ${{ inputs.php_version }})
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: "postgres:${{ inputs.postgres_version }}"
+        env:
+          POSTGRES_DB: ${{ inputs.db_name }}
+          POSTGRES_USER: ${{ inputs.db_user }}
+          POSTGRES_PASSWORD: ${{ inputs.db_pass }}
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     defaults:
       run:
         shell: bash
