@@ -93,12 +93,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: kilip/gh-common/.github/actions/setup-php@main
-        with:
-          php_version: ${{ inputs.php_version }}
-          working_dir: ${{ inputs.working_dir }}
-
       - name: Setup postgres
         if: inputs.use_postgres
         run: |
@@ -106,6 +100,12 @@ jobs:
           sudo -u postgres psql -d template1 -c "CREATE USER ${{ inputs.db_user }} WITH PASSWORD '${{ inputs.db_pass }}' CREATEDB"
           createdb -h localhost -p 5432 -U ${{ inputs.db_user }} ${{ inputs.db_name }}
           pg_isready -d ${{ inputs.db_name }} -h localhost -p 5432 -U ${{ inputs.db_user }}
+
+      - name: Setup PHP
+        uses: kilip/gh-common/.github/actions/setup-php@main
+        with:
+          php_version: ${{ inputs.php_version }}
+          working_dir: ${{ inputs.working_dir }}
 
       - name: Run PHPUnit Tests
         run: |
