@@ -36,6 +36,11 @@ on:
         required: false
         type: string
         default: kilip
+      use_postgres:
+        description: Use Postgresql
+        required: false
+        type: boolean
+        default: false
 
 env:
   DATABASE_URL: "postgres://${{ inputs.db_user }}:${{ inputs.db_pass}}@localhost:5432/${{ inputs.db_name }}?serverVersion=16&charset=utf8"
@@ -44,21 +49,6 @@ jobs:
   phpstan:
     name: PHPStan (PHP ${{ inputs.php_version }})
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: "postgres:${{ inputs.postgres_version }}"
-        env:
-          POSTGRES_DB: ${{ inputs.db_name }}
-          POSTGRES_USER: ${{ inputs.db_user }}
-          POSTGRES_PASSWORD: ${{ inputs.db_pass }}
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
     defaults:
       run:
         shell: bash
@@ -66,6 +56,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Setup postgres
+        if: inputs.use_postgres
+        run: |
+          sudo systemctl start postgresql
+          sudo -u postgres psql -d template1 -c "CREATE USER ${{ inputs.db_user }} WITH PASSWORD '${{ inputs.db_pass }}' CREATEDB"
+          createdb -h localhost -p 5432 -U ${{ inputs.db_user }} ${{ inputs.db_name }}
+          pg_isready -d api_platform_test -h localhost -p 5432 -U api_platform
 
       - name: Setup PHP
         uses: kilip/gh-common/.github/actions/setup-php@main
@@ -107,6 +105,11 @@ jobs:
         with:
           php_version: ${{ inputs.php_version }}
           working_dir: ${{ inputs.working_dir }}
+
+      - name: Ensure postgres database created
+        if: ${{ inputs.phpunit_symfony_create_db }}
+        run: |
+          ./bin/console doctrine:database:create --env=test
 
       - name: Run PHPUnit Tests
         run: |

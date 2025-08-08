@@ -23,7 +23,7 @@ runs:
       with:
         php-version: ${{ inputs.php_version }}
         tools: pecl, composer
-        extensions: intl, bcmath, curl, openssl, mbstring, mongodb
+        extensions: intl, bcmath, curl, openssl, mbstring, mongodb, pdo_pgsql, mongodb
         coverage: pcov
         ini-values: memory_limit=-1
 
