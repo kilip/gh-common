@@ -87,7 +87,8 @@ jobs:
       run:
         shell: bash
         working-directory: ${{ inputs.working_dir }}
-
+    env:
+      PGPASSWORD: ${{ inputs.db_pass }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
