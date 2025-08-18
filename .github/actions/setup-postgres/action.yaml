@@ -26,3 +26,5 @@ runs:
         sudo -u postgres psql -d template1 -c "CREATE USER ${{ inputs.db_user }} WITH PASSWORD '${{ inputs.db_pass }}' CREATEDB"
         createdb -h localhost -p 5432 -U ${{ inputs.db_user }} ${{ inputs.db_name }}
         pg_isready -d ${{ inputs.db_name }} -h localhost -p 5432 -U ${{ inputs.db_user }}
+      env:
+        PGPASSWORD: ${{ inputs.db_pass }}
