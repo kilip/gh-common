@@ -1,0 +1,28 @@
+---
+name: Setup Postgres
+description: Configures database
+
+inputs:
+  db_user:
+    description: Database User
+    required: false
+    default: omed
+  db_name:
+    description: Database Name
+    required: false
+    default: omed
+  db_pass:
+    description: Database Password
+    required: false
+    default: omed
+
+runs:
+  using: composite
+  steps:
+    - name: Setup postgres
+      shell: bash
+      run: |
+        sudo systemctl start postgresql
+        sudo -u postgres psql -d template1 -c "CREATE USER ${{ inputs.db_user }} WITH PASSWORD '${{ inputs.db_pass }}' CREATEDB"
+        createdb -h localhost -p 5432 -U ${{ inputs.db_user }} ${{ inputs.db_name }}
+        pg_isready -d ${{ inputs.db_name }} -h localhost -p 5432 -U ${{ inputs.db_user }}
